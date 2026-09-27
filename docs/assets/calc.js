@@ -33,14 +33,18 @@
     var gross = price * sales;
 
     // PaidExtension: Paddle 5% + 50¢ per sale, $0 infra inside the free tiers.
-    // The binding limit is KV writes: each licensed install (Pro or trial;
-    // free users never call the licence server) currently makes
-    // ~32/day (a licence refresh every 30 min writes twice), so the free
-    // 1,000 writes/day covers ~30 active users. Workers Paid is $5/month with
-    // 1M writes/month included, then $5 per extra million.
+    // Measured per licensed install (Pro or trial; free users never call the
+    // licence server): ~1 KV write a day and up to ~32 requests a day (a
+    // renewal every 30 min while the browser is open). Free KV allows 1,000
+    // writes a day, so ~1,000 active licensed installs; Workers Paid is
+    // $5/month with 10M requests and 1M writes a month included, then
+    // $0.30 per extra million requests and $5 per extra million writes.
     var paddle = sales * (price * 0.05 + 0.5);
-    var writesPerMonth = users * 32 * 30;
-    var usInfra = users <= 30 ? 0 : 5 + Math.max(0, writesPerMonth - 1e6) / 1e6 * 5;
+    var requestsPerMonth = users * 32 * 30;
+    var writesPerMonth = users * 30;
+    var usInfra = users <= 1000 ? 0 : 5 +
+      Math.max(0, requestsPerMonth - 10e6) / 1e6 * 0.30 +
+      Math.max(0, writesPerMonth - 1e6) / 1e6 * 5;
     var usKeep = gross - paddle - usInfra;
 
     // Without a merchant of record, sales tax is yours: a calculation tool
