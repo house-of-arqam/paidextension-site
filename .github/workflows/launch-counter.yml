@@ -1,7 +1,7 @@
 name: Launch counter
 
 # Keeps docs/launch.json in step with the Polar LAUNCH discount so the pricing
-# card can show "N of 50 left" and flip to the full price once the cap is
+# card can flip to the full price once the cap is
 # hit. Polar enforces the cap itself; this only updates the copy. Commits
 # only when the count changed. Pushes made with GITHUB_TOKEN do not trigger
 # other workflows, so it dispatches pages.yml explicitly after committing.
