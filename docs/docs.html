@@ -6,9 +6,9 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; img-src 'self' data:; style-src 'self'; base-uri 'none'; form-action 'none'">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <title>Docs — PaidExtension</title>
-  <meta name="description" content="How PaidExtension works: repository layout, the one-hour setup path, licensing architecture, costs, and what the AI-agent skills do.">
+  <meta name="description" content="How PaidExtension works: repository layout, the setup path, licensing architecture, costs, and what the AI-agent skills do.">
   <meta property="og:title" content="Docs — PaidExtension">
-  <meta property="og:description" content="How PaidExtension works: repository layout, the one-hour setup path, licensing architecture, costs, and what the AI-agent skills do.">
+  <meta property="og:description" content="How PaidExtension works: repository layout, the setup path, licensing architecture, costs, and what the AI-agent skills do.">
   <meta property="og:image" content="https://paidextension.dev/og.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -58,16 +58,17 @@ docs/                       setup, licensing, publishing guides
 .agents/skills/             agent skills: setup, publish, test
 .github/workflows/          ci.yml, pages.yml, release.yml</code></pre>
 
-      <h2 id="setup">The setup path (about an hour)</h2>
+      <h2 id="setup">The setup path (an afternoon)</h2>
 <pre class="terminal"><code># from clone to a rebranded, fully tested paid extension
-git clone &lt;your copy&gt; my-extension &amp;&amp; cd my-extension
+git clone https://github.com/house-of-arqam/paidextension.git my-extension
+cd my-extension &amp;&amp; git remote rename origin upstream   # push to your own private repo
 npm run init          # name, company, prices, seats, trial length
 npm run install:all
-npm run check         # lint, types, 120+ tests, builds — all green</code></pre>
+npm run check         # lint, types, 180+ tests, builds — all green</code></pre>
       <ol>
         <li><strong>Rebrand.</strong> <code>npm run init</code> asks for product name, company, support email, site URL, seats and trial days, then rewrites the config and every file mirroring it: manifests, <code>wrangler.toml</code>, the site's HTML and CSP, <code>CNAME</code>, tests. Non-interactive mode for agents: <code>npm run init -- --from answers.json</code>.</li>
-        <li><strong>Signing keypair.</strong> <code>cd worker &amp;&amp; npm run keygen -- --write</code> generates an ES256 keypair, writes the public half into the extension and prints the private half for the Worker secret. Production builds refuse to ship while the development key is still in place.</li>
-        <li><strong>Paddle.</strong> Create one product with monthly, yearly and one-time (lifetime) prices, a server API key, a client token and a webhook destination pointing at <code>/webhook</code>. The guide lists the exact seven events to subscribe to.</li>
+        <li><strong>Signing keypair.</strong> <code>cd worker &amp;&amp; npm run keygen -- --write</code> generates an ES256 keypair, writes the public half into the extension and the private half into the local <code>.dev.vars</code>, and prints it for the Worker secret. Production builds refuse to ship while the development key is still in place. Before creating any accounts you can already run the Worker locally (<code>npm run dev</code>), start a trial and activate keys from <code>npm run mint-key</code>.</li>
+        <li><strong>Paddle.</strong> Create one product with monthly, yearly and one-time (lifetime) prices, a server API key, a client token, and — once the Worker is deployed — a webhook destination pointing at <code>/webhook</code>. The guide lists the exact seven events to subscribe to.</li>
         <li><strong>Deploy the Worker.</strong> <code>wrangler kv namespace create</code>, four <code>wrangler secret put</code> calls, <code>npm run deploy</code>. <code>GET /health</code> reports which secrets and prices are configured.</li>
         <li><strong>Email (optional).</strong> Verify a sending domain in Resend and set the API key. Without it buyers still get Pro — the extension polls for its key after checkout.</li>
         <li><strong>Site.</strong> Enable GitHub Pages for <code>site/docs</code>, add a CNAME record, enforce HTTPS.</li>
