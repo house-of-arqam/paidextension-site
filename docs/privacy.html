@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; img-src 'self' data:; style-src 'self'; base-uri 'none'; form-action 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://static.cloudflareinsights.com/beacon.min.js/; connect-src 'self'; img-src 'self' data:; style-src 'self'; base-uri 'none'; form-action 'none'">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <title>Privacy — PaidExtension</title>
   <meta name="description" content="What paidextension.dev collects (almost nothing) and how purchases are processed.">
@@ -37,10 +37,11 @@
 
     <main class="doc narrow">
       <h1>Privacy</h1>
-      <p class="updated">Last updated: September 2026</p>
+      <p class="updated">Last updated: October 2026</p>
 
       <h2>This website</h2>
-      <p>paidextension.dev is a static site served by GitHub Pages. It sets no cookies, runs no analytics and loads no third-party scripts. The only thing stored in your browser is your light/dark theme preference, in <code>localStorage</code>, if you toggle it. GitHub, as the host, may log requests (IP address, user agent) under <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement" rel="noopener">GitHub's privacy statement</a>.</p>
+      <p>paidextension.dev is a static site hosted on GitHub Pages and served through Cloudflare. It sets no cookies and runs no advertising or cross-site tracking. The only thing stored in your browser is your light/dark theme preference, in <code>localStorage</code>, if you toggle it.</p>
+      <p>We use <a href="https://www.cloudflare.com/web-analytics/" rel="noopener">Cloudflare Web Analytics</a> to see which pages are read and how fast they load. Cloudflare adds a small script to each page that reports page views, referrers, country, browser and device type, and page-load timings. Cloudflare states it uses no cookies or <code>localStorage</code> for this and does not fingerprint visitors by IP address or user agent. GitHub and Cloudflare, as host and network, may log requests (IP address, user agent) under <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement" rel="noopener">GitHub's privacy statement</a> and <a href="https://www.cloudflare.com/privacypolicy/" rel="noopener">Cloudflare's privacy policy</a>.</p>
 
       <h2>Purchases</h2>
       <p>Checkout happens on <a href="https://polar.sh" rel="noopener">Polar</a>, which acts as merchant of record. Polar collects your email, payment details and billing country, and — to deliver the kit — the GitHub account to grant repository access to. We receive your name, email, country and GitHub username so we can provide support and updates. Payment card data never reaches us. See <a href="https://polar.sh/legal/privacy" rel="noopener">Polar's privacy policy</a>.</p>

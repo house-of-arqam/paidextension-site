@@ -8,9 +8,13 @@ const fs = require('fs');
 const path = require('path');
 
 const docsDir = path.resolve(__dirname, '..', 'docs');
-// script-src is deliberately absent on the script-free pages; default-src
-// 'none' already covers them.
 const requiredDirectives = ['default-src', 'base-uri', 'form-action'];
+// Cloudflare auto-injects its Web Analytics beacon into every page; it reports
+// back to the same origin.
+const requiredSources = [
+  ['script-src', 'https://static.cloudflareinsights.com/beacon.min.js/'],
+  ['connect-src', "'self'"]
+];
 const errors = [];
 
 for (const file of fs.readdirSync(docsDir).filter(name => name.endsWith('.html'))) {
@@ -25,6 +29,13 @@ for (const file of fs.readdirSync(docsDir).filter(name => name.endsWith('.html')
   for (const directive of requiredDirectives) {
     if (!match[1].includes(`${directive} `)) {
       errors.push(`${file}: CSP is missing the ${directive} directive`);
+    }
+  }
+  for (const [directive, source] of requiredSources) {
+    const value = match[1].split(';').map(part => part.trim().split(/\s+/))
+      .find(([name]) => name === directive);
+    if (!value || !value.includes(source)) {
+      errors.push(`${file}: ${directive} must allow ${source} for Cloudflare Web Analytics`);
     }
   }
 }
