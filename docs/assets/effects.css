@@ -42,15 +42,11 @@ header.top::before {
     radial-gradient(closest-side at 35% 75%, color-mix(in oklab, var(--accent-2) 24%, transparent), transparent);
   filter: blur(30px); pointer-events: none;
 }
-.eyebrow { background: var(--surface); backdrop-filter: blur(6px); display: inline-flex; align-items: center; gap: 8px; }
-.eyebrow::before {
-  content: ''; width: 7px; height: 7px; border-radius: 50%; background: #22C55E;
-  box-shadow: 0 0 0 3px color-mix(in oklab, #22C55E 25%, transparent);
-}
+.eyebrow { background: var(--surface); backdrop-filter: blur(6px); }
 .hero h1 { font-weight: 800; letter-spacing: -0.04em; }
 .hero h1 em {
   background: linear-gradient(100deg, var(--accent) 0%, var(--accent-2) 45%, var(--accent-3) 90%);
-  background-size: 200% 100%; -webkit-background-clip: text; background-clip: text; color: transparent;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
 }
 
 /* Buttons: lit gradient, glow, shine sweep on hover. */
@@ -71,15 +67,10 @@ header.top::before {
 .cta.secondary:hover { background: color-mix(in oklab, var(--accent) 10%, var(--card)); }
 .cta.secondary::after { display: none; }
 
-/* Demo: rotating light along the popup border, glow underneath, terminal chrome. */
+/* Demo: glow underneath and terminal chrome. A light sweeps the popup border
+   once whenever the licence state changes (demo.js adds .beam). */
 @property --beam { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
-.popup {
-  border: 1px solid transparent;
-  background:
-    linear-gradient(var(--card), var(--card)) padding-box,
-    conic-gradient(from var(--beam), var(--kraft) 0 62%, var(--accent) 76%, var(--accent-3) 84%, var(--kraft) 94%) border-box;
-  box-shadow: 0 40px 90px -40px var(--glow), 0 18px 50px -24px rgba(15, 17, 23, 0.4);
-}
+.popup { box-shadow: 0 40px 90px -40px var(--glow), 0 18px 50px -24px rgba(15, 17, 23, 0.4); }
 .demo-log { position: relative; padding-top: 38px; border: 1px solid rgba(255, 255, 255, 0.06); box-shadow: 0 24px 60px -30px rgba(15, 17, 23, 0.6); }
 .demo-log::before {
   content: ''; position: absolute; top: 14px; left: 16px; width: 10px; height: 10px; border-radius: 50%;
@@ -87,13 +78,9 @@ header.top::before {
 }
 pre { border: 1px solid rgba(255, 255, 255, 0.06); box-shadow: 0 24px 60px -34px rgba(15, 17, 23, 0.55); }
 
-/* Stats: big numbers with a fade, hairline above. */
+/* Stats: big numbers, hairline above. */
 .stats { border-top: 1px solid transparent; border-image: linear-gradient(90deg, transparent, var(--kraft), transparent) 1; margin-top: 24px; }
-.stat b {
-  font-size: 34px; font-weight: 800; letter-spacing: -0.04em;
-  background: linear-gradient(180deg, var(--ink) 30%, color-mix(in oklab, var(--ink) 45%, transparent));
-  -webkit-background-clip: text; background-clip: text; color: transparent;
-}
+.stat b { font-size: 34px; font-weight: 800; letter-spacing: -0.04em; }
 
 /* Cards: cursor spotlight on the border and surface. */
 .card { position: relative; isolation: isolate; }
@@ -118,6 +105,17 @@ pre { border: 1px solid rgba(255, 255, 255, 0.06); box-shadow: 0 24px 60px -34px
   box-shadow: 0 40px 80px -40px var(--glow);
 }
 .plan .price { font-weight: 800; letter-spacing: -0.04em; }
+/* Launch price lands once as the card scrolls in: the old price is struck
+   through, then the new one pops. motion.js adds .motion only when motion is
+   welcome, and .in when the card is on screen. */
+.motion .plan .price s { position: relative; text-decoration: none; }
+.motion .plan .price s::after {
+  content: ''; position: absolute; left: -3px; right: -3px; top: 54%; height: 2px; border-radius: 2px; background: currentColor;
+  transform: scaleX(0); transform-origin: 0 50%; transition: transform 0.4s ease 0.5s;
+}
+.motion .plan.in .price s::after { transform: scaleX(1); }
+.motion .plan .price s + span { display: inline-block; opacity: 0; transform: translateY(8px) scale(0.9); transition: opacity 0.35s ease 0.9s, transform 0.5s cubic-bezier(0.2, 1.5, 0.4, 1) 0.9s; }
+.motion .plan.in .price s + span { opacity: 1; transform: none; }
 
 /* FAQ: plus/cross marker and a smooth open where ::details-content exists. */
 .faq summary { list-style: none; display: flex; justify-content: space-between; align-items: center; gap: 16px; }
@@ -131,25 +129,21 @@ pre { border: 1px solid rgba(255, 255, 255, 0.06); box-shadow: 0 24px 60px -34px
 
 @media (prefers-reduced-motion: no-preference) {
   .hero::after { animation: aurora 16s ease-in-out infinite alternate; }
-  .hero h1 em { animation: shimmer 6s ease-in-out infinite alternate; }
-  .eyebrow::before { animation: pulse 2.4s ease-in-out infinite; }
-  .popup { animation: beam 7s linear infinite; }
+  .popup.beam {
+    border-color: transparent;
+    background:
+      linear-gradient(var(--card), var(--card)) padding-box,
+      conic-gradient(from var(--beam), var(--kraft) 0 62%, var(--accent) 76%, var(--accent-3) 84%, var(--kraft) 94%) border-box;
+    animation: beam 1.3s cubic-bezier(0.4, 0, 0.2, 1) 1;
+  }
+  .demo-tier.flip { animation: tier-flip 0.5s ease 1; }
   .faq details::details-content { block-size: 0; overflow: hidden; transition: block-size 0.35s ease, content-visibility 0.35s allow-discrete; }
   .faq details[open]::details-content { block-size: auto; }
   ::view-transition-new(root) { animation: theme-reveal 0.55s cubic-bezier(0.4, 0, 0.2, 1); }
-  @supports (animation-timeline: scroll()) {
-    body::before {
-      content: ''; position: fixed; top: 0; left: 0; right: 0; height: 2px; z-index: 60;
-      background: linear-gradient(90deg, var(--accent), var(--accent-3)); transform-origin: 0 50%;
-      animation: progress linear both; animation-timeline: scroll(root);
-    }
-  }
 }
 @keyframes aurora { from { transform: translate3d(0, 0, 0) rotate(0deg) scale(1); } to { transform: translate3d(-6%, 4%, 0) rotate(12deg) scale(1.08); } }
-@keyframes shimmer { from { background-position: 0% 50%; } to { background-position: 100% 50%; } }
-@keyframes pulse { 50% { box-shadow: 0 0 0 6px color-mix(in oklab, #22C55E 0%, transparent); } }
-@keyframes beam { to { --beam: 360deg; } }
-@keyframes progress { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes beam { from { --beam: -90deg; } to { --beam: 270deg; } }
+@keyframes tier-flip { 40% { transform: scale(1.18); } }
 @keyframes theme-reveal {
   from { clip-path: circle(0 at var(--vt-x, 100%) var(--vt-y, 0%)); }
   to { clip-path: circle(var(--vt-r, 150vmax) at var(--vt-x, 100%) var(--vt-y, 0%)); }
