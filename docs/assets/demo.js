@@ -160,6 +160,17 @@
     return parts[0].slice(0, 8) + '…' + parts[1].slice(0, 10) + '…' + parts[2].slice(-8);
   }
 
+  var popup = $('.popup');
+  function flash(node, name) {
+    if (!node) return;
+    node.classList.remove(name);
+    void node.offsetWidth; // restart the animation if it is mid-run
+    node.classList.add(name);
+  }
+  root.addEventListener('animationend', function (event) {
+    if (event.animationName === 'beam' || event.animationName === 'tier-flip') event.target.classList.remove('beam', 'flip');
+  });
+
   var FREE = ['basicMode'];
   var PRO = ['basicMode', 'advancedMode', 'exportData', 'unlimitedItems'];
 
@@ -176,6 +187,13 @@
       var on = allowed.indexOf(f.getAttribute('data-feature')) !== -1;
       f.classList.toggle('on', on);
       f.setAttribute('aria-disabled', String(!on));
+    }
+    // A licence state change is the moment worth looking at: one sweep of
+    // light round the popup and a pop on the badge (effects.css; no-ops when
+    // the visitor prefers reduced motion).
+    if (root.getAttribute('data-state') !== tier) {
+      flash(popup, 'beam');
+      flash(el.tier, 'flip');
     }
     root.setAttribute('data-state', tier);
     for (var j = 0; j < el.buttons.length; j++) {
@@ -392,17 +410,57 @@
   };
 
   var busy = false;
-  root.addEventListener('click', function (event) {
-    var btn = event.target.closest('[data-action]');
-    if (!btn || btn.disabled || busy) return;
-    var fn = actions[btn.getAttribute('data-action')];
-    if (!fn) return;
+  function run(name, btn) {
+    var fn = actions[name];
+    if (!fn || busy) return Promise.resolve();
     busy = true;
-    Promise.resolve(fn(btn)).then(function () { busy = false; }, function (err) {
+    return Promise.resolve(fn(btn)).then(function () { busy = false; }, function (err) {
       busy = false;
       log('error', String(err && err.message ? err.message : err));
     });
+  }
+  root.addEventListener('click', function (event) {
+    var btn = event.target.closest('[data-action]');
+    if (!btn || btn.disabled) return;
+    run(btn.getAttribute('data-action'), btn);
   });
+
+  // Most visitors never click a demo, so play the first steps once when it
+  // scrolls into view: trial, then a purchase. Any interaction hands control
+  // back for good. Skipped when the visitor prefers reduced motion.
+  var autoplay = { done: false, timer: null };
+  function stopAutoplay() {
+    autoplay.done = true;
+    if (autoplay.timer) window.clearTimeout(autoplay.timer);
+    root.removeAttribute('data-autoplay');
+  }
+  function startAutoplay() {
+    if (autoplay.done) return;
+    autoplay.done = true;
+    root.setAttribute('data-autoplay', '');
+    var steps = ['trial', 'buy'];
+    (function next() {
+      var name = steps.shift();
+      if (!name) { root.removeAttribute('data-autoplay'); return; }
+      autoplay.timer = window.setTimeout(function () {
+        if (!root.hasAttribute('data-autoplay')) return;
+        var btn = root.querySelector('[data-action="' + name + '"]');
+        if (!btn || btn.disabled) { root.removeAttribute('data-autoplay'); return; }
+        run(name, btn).then(next);
+      }, 2600);
+    })();
+  }
+  ['pointerdown', 'keydown', 'focusin'].forEach(function (type) { root.addEventListener(type, stopAutoplay); });
+  function armAutoplay() {
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce || !('IntersectionObserver' in window)) return;
+    var watcher = new IntersectionObserver(function (entries) {
+      if (!entries[0].isIntersecting) return;
+      watcher.disconnect();
+      startAutoplay();
+    }, { threshold: 0.6 });
+    watcher.observe(popup || root);
+  }
 
   window.crypto.subtle
     .generateKey({ name: 'ECDSA', namedCurve: 'P-256' }, false, ['sign', 'verify'])
@@ -412,6 +470,7 @@
       log('worker', 'generated a fresh ES256 keypair for this page; public key embedded in the "extension"');
       return actions.reset();
     })
+    .then(armAutoplay)
     .catch(function () {
       root.classList.add('unsupported');
     });

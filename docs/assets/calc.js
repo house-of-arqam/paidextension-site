@@ -26,6 +26,31 @@
     if (out[name]) out[name].textContent = text;
   }
 
+  // The three "you keep" figures roll to their new value so a slider move
+  // reads as a change, not a swap. Instant when reduced motion is preferred.
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var shown = {};
+  var frames = {};
+  function setMoney(name, value) {
+    if (!out[name]) return;
+    var from = shown[name];
+    if (reduce || from === undefined || !window.requestAnimationFrame) {
+      shown[name] = value;
+      out[name].textContent = money(value);
+      return;
+    }
+    if (frames[name]) window.cancelAnimationFrame(frames[name]);
+    var start = null;
+    frames[name] = window.requestAnimationFrame(function step(ts) {
+      if (start === null) start = ts;
+      var t = Math.min(1, (ts - start) / 320);
+      var eased = 1 - Math.pow(1 - t, 3);
+      shown[name] = from + (value - from) * eased;
+      out[name].textContent = money(t === 1 ? value : Math.round(shown[name]));
+      if (t < 1) frames[name] = window.requestAnimationFrame(step);
+    });
+  }
+
   function compute() {
     var price = num('price');
     var sales = num('sales');
@@ -61,9 +86,9 @@
     var diyKeep = gross - stripe - hosting - tax;
 
     setText('gross', money(gross));
-    setText('usKeep', money(usKeep));
-    setText('sdkKeep', money(sdkKeep));
-    setText('diyKeep', money(diyKeep));
+    setMoney('usKeep', usKeep);
+    setMoney('sdkKeep', sdkKeep);
+    setMoney('diyKeep', diyKeep);
     setText('usCost', money(paddle) + ' fees · ' + money(usInfra) + ' infra · tax included');
     setText('sdkCost', money(sdkCut + stripe) + ' fees · $0 infra · ' + money(tax) + ' tax');
     setText('diyCost', money(stripe) + ' fees · ' + money(hosting) + ' infra · ' + money(tax) + ' tax');
@@ -77,7 +102,7 @@
     setText('priceEcho', money(price));
     setText('salesEcho', String(sales));
     setText('usersEcho', users >= 1000 ? (users / 1000).toFixed(users % 1000 ? 1 : 0) + 'k' : String(users));
-    setText('freeTier', users > 90000 ? 'Your installs are above the Workers free tier, so the $5/month plan is counted.' : 'Your installs fit inside the Cloudflare Workers + KV free tier.');
+    setText('freeTier', users > 1000 ? 'Your installs are above the Workers free tier, so the $5/month plan is counted.' : 'Your installs fit inside the Cloudflare Workers + KV free tier.');
   }
 
   root.addEventListener('input', compute);
