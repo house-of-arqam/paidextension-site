@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://static.cloudflareinsights.com/beacon.min.js/; connect-src 'self'; img-src 'self' data:; style-src 'self'; base-uri 'none'; form-action 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://static.cloudflareinsights.com/beacon.min.js/; connect-src 'self'; font-src 'self'; img-src 'self' data:; style-src 'self'; base-uri 'none'; form-action 'none'">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <title>PaidExtension — The $0/month stack for paid browser extensions</title>
   <meta name="description" content="Sell a Chrome, Edge or Firefox extension without servers, a database bill or tax filings. MV3 extension + Cloudflare Worker licensing + Paddle merchant of record + GitHub Pages site. Offline license keys, device seats, trials, refunds. One-time purchase.">
@@ -19,8 +19,11 @@
   <link rel="canonical" href="https://paidextension.dev/">
   <link rel="icon" type="image/png" href="favicon.png">
   <link rel="stylesheet" href="assets/base.css">
+  <link rel="preload" href="assets/fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="assets/site.css">
+  <link rel="stylesheet" href="assets/effects.css">
   <script src="assets/theme.js"></script>
+  <script src="assets/effects.js" defer></script>
   <script src="assets/tabs.js" defer></script>
   <script src="assets/demo.js" defer></script>
   <script src="assets/configure.js" defer></script>
@@ -514,7 +517,7 @@ steps:
         <h2>Pricing</h2>
         <p class="sub">Pay once. Build as many extensions as you like. Same repo, same updates — the tier sets how many developers may use it.</p>
         <div class="plans">
-          <div class="card plan">
+          <div class="card plan featured">
             <span class="badge">Launch price</span>
             <h3>Solo</h3>
             <p class="price"><s>$149</s><span data-price-full="$149">$99</span></p>

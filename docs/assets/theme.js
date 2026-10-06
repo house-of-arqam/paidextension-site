@@ -37,7 +37,20 @@
 
     toggle.addEventListener('click', () => {
       const next = isDark() ? 'light' : 'dark';
-      root.dataset.theme = next;
+      const apply = () => { root.dataset.theme = next; };
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (document.startViewTransition && !reduce) {
+        // Circular reveal from the toggle; effects.css reads these.
+        const box = toggle.getBoundingClientRect();
+        const x = box.left + box.width / 2;
+        const y = box.top + box.height / 2;
+        root.style.setProperty('--vt-x', x + 'px');
+        root.style.setProperty('--vt-y', y + 'px');
+        root.style.setProperty('--vt-r', Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y)) + 'px');
+        document.startViewTransition(apply);
+      } else {
+        apply();
+      }
       try {
         window.localStorage.setItem(STORAGE_KEY, next);
       } catch (_err) {
