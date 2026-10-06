@@ -9,8 +9,10 @@
     "check:links": "node scripts/check-links.js",
     "check:csp": "node scripts/check-csp.js",
     "check:jsonld": "node scripts/check-jsonld.js",
+    "check:stamps": "node scripts/stamp-assets.js --check",
     "og": "node scripts/render-og.js",
-    "check": "npm run lint && npm run lint:html && npm run check:links && npm run check:csp && npm run check:jsonld",
+    "stamp": "node scripts/stamp-assets.js",
+    "check": "npm run lint && npm run lint:html && npm run check:links && npm run check:csp && npm run check:jsonld && npm run check:stamps",
     "serve": "python3 -m http.server 8898 --directory docs"
   },
   "devDependencies": {
