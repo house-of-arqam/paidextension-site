@@ -21,7 +21,22 @@
         tabs[i].tabIndex = on ? 0 : -1;
       }
       for (var j = 0; j < panels.length; j++) panels[j].hidden = panels[j].id !== tab.getAttribute('aria-controls');
+      slide(tab);
     }
+    // One indicator slides to the selected tab; effects.css draws it.
+    function slide(tab) {
+      if (!tab.offsetWidth) return;
+      list.classList.add('sliding');
+      list.style.setProperty('--ind-x', tab.offsetLeft + 'px');
+      list.style.setProperty('--ind-w', tab.offsetWidth + 'px');
+    }
+    function reslide() {
+      var current = list.querySelector('[role="tab"][aria-selected="true"]');
+      if (current) slide(current);
+    }
+    window.addEventListener('resize', reslide);
+    // Tabs inside a closed <details> have no width until it opens.
+    document.addEventListener('toggle', reslide, true);
     function onKey(e) {
       var idx = Array.prototype.indexOf.call(tabs, e.currentTarget);
       var next = e.key === 'ArrowRight' ? idx + 1 : e.key === 'ArrowLeft' ? idx - 1 : e.key === 'Home' ? 0 : e.key === 'End' ? tabs.length - 1 : -1;
