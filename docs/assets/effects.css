@@ -1,0 +1,166 @@
+/* Visual effects layer: depth, glow and micro-interactions on top of
+   site.css. Pure CSS where possible; effects.js only feeds pointer and scroll
+   state. Every animation sits behind prefers-reduced-motion. */
+:root {
+  --card: light-dark(#fff, #181B25);
+  --surface: light-dark(rgba(247, 247, 251, 0.72), rgba(15, 17, 23, 0.7));
+  --accent-2: light-dark(#7C3AED, #C084FC);
+  --accent-3: light-dark(#0284C7, #38BDF8);
+  --glow: color-mix(in oklab, var(--accent) 55%, transparent);
+  interpolate-size: allow-keywords;
+}
+html, body { overflow-x: clip; }
+html { scroll-padding-top: 84px; }
+body { -webkit-font-smoothing: antialiased; font-feature-settings: 'cv11', 'ss01'; }
+h1, h2, h3 { text-wrap: balance; }
+section > .wrap > p, .lede { text-wrap: pretty; }
+section h2 { letter-spacing: -0.035em; }
+
+/* Glass header: sticky, frosts once the page scrolls. */
+header.top { position: sticky; top: 0; z-index: 50; }
+header.top::before {
+  content: ''; position: absolute; inset: 0 calc(50% - 50vw); z-index: -1;
+  background: var(--surface); backdrop-filter: saturate(1.6) blur(14px);
+  border-bottom: 1px solid var(--kraft); opacity: 0; transition: opacity 0.3s ease;
+}
+.scrolled header.top::before { opacity: 1; }
+
+/* Hero backdrop: masked dot grid plus a soft aurora behind the demo. */
+.hero { position: relative; isolation: isolate; }
+.hero::before {
+  content: ''; position: absolute; z-index: -2; top: -140px; bottom: -60px; left: 50%; width: 100vw; transform: translateX(-50%);
+  background-image: radial-gradient(circle at 1px 1px, light-dark(rgba(21, 24, 38, 0.13), rgba(241, 242, 247, 0.08)) 1px, transparent 0);
+  background-size: 22px 22px;
+  mask-image: radial-gradient(ellipse 65% 70% at 50% 40%, #000 25%, transparent 72%);
+  pointer-events: none;
+}
+.hero::after {
+  content: ''; position: absolute; z-index: -1; top: -60px; right: -12%; width: min(820px, 90vw); aspect-ratio: 1.2;
+  background:
+    radial-gradient(closest-side at 40% 40%, color-mix(in oklab, var(--accent) 34%, transparent), transparent),
+    radial-gradient(closest-side at 70% 60%, color-mix(in oklab, var(--accent-3) 26%, transparent), transparent),
+    radial-gradient(closest-side at 35% 75%, color-mix(in oklab, var(--accent-2) 24%, transparent), transparent);
+  filter: blur(30px); pointer-events: none;
+}
+.eyebrow { background: var(--surface); backdrop-filter: blur(6px); display: inline-flex; align-items: center; gap: 8px; }
+.eyebrow::before {
+  content: ''; width: 7px; height: 7px; border-radius: 50%; background: #22C55E;
+  box-shadow: 0 0 0 3px color-mix(in oklab, #22C55E 25%, transparent);
+}
+.hero h1 { font-weight: 800; letter-spacing: -0.04em; }
+.hero h1 em {
+  background: linear-gradient(100deg, var(--accent) 0%, var(--accent-2) 45%, var(--accent-3) 90%);
+  background-size: 200% 100%; -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+
+/* Buttons: lit gradient, glow, shine sweep on hover. */
+.cta {
+  position: relative; overflow: hidden; isolation: isolate;
+  background: linear-gradient(180deg, color-mix(in oklab, var(--accent) 82%, #fff), var(--accent));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28), 0 10px 28px -12px var(--glow);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+.cta:hover { background: linear-gradient(180deg, var(--accent), var(--accent-d)); transform: translateY(-1px); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28), 0 16px 36px -12px var(--glow); }
+.cta::after {
+  content: ''; position: absolute; inset: 0; z-index: -1;
+  background: linear-gradient(110deg, transparent 35%, rgba(255, 255, 255, 0.35) 50%, transparent 65%);
+  transform: translateX(-120%); transition: transform 0.7s ease;
+}
+.cta:hover::after { transform: translateX(120%); }
+.cta.secondary { background: var(--surface); backdrop-filter: blur(6px); box-shadow: none; }
+.cta.secondary:hover { background: color-mix(in oklab, var(--accent) 10%, var(--card)); }
+.cta.secondary::after { display: none; }
+
+/* Demo: rotating light along the popup border, glow underneath, terminal chrome. */
+@property --beam { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+.popup {
+  border: 1px solid transparent;
+  background:
+    linear-gradient(var(--card), var(--card)) padding-box,
+    conic-gradient(from var(--beam), var(--kraft) 0 62%, var(--accent) 76%, var(--accent-3) 84%, var(--kraft) 94%) border-box;
+  box-shadow: 0 40px 90px -40px var(--glow), 0 18px 50px -24px rgba(15, 17, 23, 0.4);
+}
+.demo-log { position: relative; padding-top: 38px; border: 1px solid rgba(255, 255, 255, 0.06); box-shadow: 0 24px 60px -30px rgba(15, 17, 23, 0.6); }
+.demo-log::before {
+  content: ''; position: absolute; top: 14px; left: 16px; width: 10px; height: 10px; border-radius: 50%;
+  background: #FF5F57; box-shadow: 16px 0 0 #FEBC2E, 32px 0 0 #28C840;
+}
+pre { border: 1px solid rgba(255, 255, 255, 0.06); box-shadow: 0 24px 60px -34px rgba(15, 17, 23, 0.55); }
+
+/* Stats: big numbers with a fade, hairline above. */
+.stats { border-top: 1px solid transparent; border-image: linear-gradient(90deg, transparent, var(--kraft), transparent) 1; margin-top: 24px; }
+.stat b {
+  font-size: 34px; font-weight: 800; letter-spacing: -0.04em;
+  background: linear-gradient(180deg, var(--ink) 30%, color-mix(in oklab, var(--ink) 45%, transparent));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+
+/* Cards: cursor spotlight on the border and surface. */
+.card { position: relative; isolation: isolate; }
+.card::before, .card::after { content: ''; position: absolute; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity 0.3s ease; }
+.card::before {
+  inset: -1px; padding: 1px;
+  background: radial-gradient(360px circle at var(--mx, 50%) var(--my, 0%), var(--accent), transparent 45%);
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+}
+.card::after {
+  inset: 0; z-index: -1;
+  background: radial-gradient(480px circle at var(--mx, 50%) var(--my, 0%), color-mix(in oklab, var(--accent) 9%, transparent), transparent 50%);
+}
+.card:hover::before, .card:hover::after { opacity: 1; }
+
+/* Pricing: the featured plan gets a gradient border and glow. */
+.plan.featured {
+  border-color: transparent;
+  background:
+    linear-gradient(var(--card), var(--card)) padding-box,
+    linear-gradient(160deg, var(--accent), var(--accent-3) 45%, var(--kraft) 80%) border-box;
+  box-shadow: 0 40px 80px -40px var(--glow);
+}
+.plan .price { font-weight: 800; letter-spacing: -0.04em; }
+
+/* FAQ: plus/cross marker and a smooth open where ::details-content exists. */
+.faq summary { list-style: none; display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: '+'; font-size: 22px; font-weight: 400; line-height: 1; color: var(--muted); transition: transform 0.3s ease, color 0.3s ease; }
+.faq details[open] summary::after { transform: rotate(45deg); color: var(--accent); }
+.faq summary:hover { color: var(--accent); }
+
+/* Theme switch: circular reveal from the toggle (theme.js sets the origin). */
+::view-transition-old(root), ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero::after { animation: aurora 16s ease-in-out infinite alternate; }
+  .hero h1 em { animation: shimmer 6s ease-in-out infinite alternate; }
+  .eyebrow::before { animation: pulse 2.4s ease-in-out infinite; }
+  .popup { animation: beam 7s linear infinite; }
+  .faq details::details-content { block-size: 0; overflow: hidden; transition: block-size 0.35s ease, content-visibility 0.35s allow-discrete; }
+  .faq details[open]::details-content { block-size: auto; }
+  ::view-transition-new(root) { animation: theme-reveal 0.55s cubic-bezier(0.4, 0, 0.2, 1); }
+  @supports (animation-timeline: scroll()) {
+    body::before {
+      content: ''; position: fixed; top: 0; left: 0; right: 0; height: 2px; z-index: 60;
+      background: linear-gradient(90deg, var(--accent), var(--accent-3)); transform-origin: 0 50%;
+      animation: progress linear both; animation-timeline: scroll(root);
+    }
+  }
+}
+@keyframes aurora { from { transform: translate3d(0, 0, 0) rotate(0deg) scale(1); } to { transform: translate3d(-6%, 4%, 0) rotate(12deg) scale(1.08); } }
+@keyframes shimmer { from { background-position: 0% 50%; } to { background-position: 100% 50%; } }
+@keyframes pulse { 50% { box-shadow: 0 0 0 6px color-mix(in oklab, #22C55E 0%, transparent); } }
+@keyframes beam { to { --beam: 360deg; } }
+@keyframes progress { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes theme-reveal {
+  from { clip-path: circle(0 at var(--vt-x, 100%) var(--vt-y, 0%)); }
+  to { clip-path: circle(var(--vt-r, 150vmax) at var(--vt-x, 100%) var(--vt-y, 0%)); }
+}
+
+/* Phones: keep the sticky header to one row so it doesn't eat the screen. */
+@media (max-width: 560px) {
+  header.top { flex-wrap: nowrap; padding: 12px 0; }
+  .brand { font-size: 15px; gap: 8px; }
+  .brand img { width: 28px; height: 28px; }
+  nav { flex-wrap: nowrap; gap: 12px; }
+  nav a { font-size: 13.5px; }
+  html { scroll-padding-top: 64px; }
+}
