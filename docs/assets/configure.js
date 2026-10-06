@@ -40,7 +40,7 @@
     var yearly = money(val('yearly'), '');
     var lifetime = money(val('lifetime'), '');
     return {
-      name: name, slug: slug, shortName: name.split(/\s+/)[0].slice(0, 12), company: company, site: site, host: host,
+      name: name, slug: slug, shortName: name.length <= 12 ? name : name.split(/\s+/)[0].slice(0, 12), company: company, site: site, host: host,
       seats: seats, trial: trial, pro: pro, monthly: monthly, yearly: yearly, lifetime: lifetime,
       description: val('description') || 'A paid browser extension built with PaidExtension.'
     };
