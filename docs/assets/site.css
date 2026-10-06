@@ -16,6 +16,8 @@ nav a { color: var(--muted); text-decoration: none; font-size: 14px; }
 nav a:hover { color: var(--ink); }
 nav a.buy { color: var(--accent); font-weight: 600; }
 @media (max-width: 560px) { nav .nav-extra { display: none; } }
+/* Phones: the bullet lists carry What's inside; the code samples are a desktop extra. */
+@media (max-width: 560px) { #inside .snippet { display: none; } .hero .lede { font-size: 17px; margin-bottom: 22px; } }
 #theme-toggle {
   background: transparent; border: 1px solid var(--kraft); color: var(--muted);
   border-radius: 999px; width: 34px; height: 34px; cursor: pointer;
@@ -249,6 +251,8 @@ tr.live + tr.live td { font-size: 12.5px; color: var(--muted); font-weight: 500;
 .tk-p { color: #FFCB6B; }
 
 /* Config → output preview */
+.configure-fold { max-width: none; margin-top: 28px; }
+.configure-fold[open] > summary { margin-bottom: 16px; }
 .configure { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: 24px; align-items: start; }
 @media (max-width: 880px) { .configure { grid-template-columns: 1fr; } }
 .configure-form { display: grid; gap: 12px; background: light-dark(#fff, #181B25); border: 1px solid var(--kraft); border-radius: 14px; padding: 20px; }

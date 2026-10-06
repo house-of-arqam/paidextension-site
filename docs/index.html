@@ -85,22 +85,6 @@
       },
       {
         "@type": "Question",
-        "name": "Why Paddle rather than Stripe?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Paddle is a merchant of record: it is legally the seller, so it collects and remits sales tax in every jurisdiction and handles invoices, refunds and chargebacks. With Stripe those obligations are yours. For a solo developer selling globally that difference is the whole ballgame."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Is it really $0/month?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Until you outgrow the free tiers, yes: GitHub Pages is free, Cloudflare Workers gives 100,000 requests/day and KV 1,000 writes/day, Resend gives 3,000 emails/month. Paddle charges 5% + 50¢ per sale and nothing otherwise. You pay for a domain (~$12/year)."
-        }
-      },
-      {
-        "@type": "Question",
         "name": "Can I use React / WXT / Plasmo?",
         "acceptedAnswer": {
           "@type": "Answer",
@@ -121,14 +105,6 @@
         "acceptedAnswer": {
           "@type": "Answer",
           "text": "The repo ships an AGENTS.md plus three skills in .agents/skills/ — setup, publish and test — written as checklists an AI coding agent can execute. They encode the things that usually go wrong: service-worker constraints, CSP rules, Paddle sandbox quirks, store-review requirements."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Refunds?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "14 days, no questions asked — email hello@paidextension.dev. We'll revoke repo access and refund through Polar."
         }
       }
     ]
@@ -155,7 +131,7 @@
           <div class="hero-copy">
             <span class="eyebrow">Chrome &middot; Edge &middot; Firefox &middot; Manifest V3</span>
             <h1>The <em>$0/month</em> stack for paid browser extensions.</h1>
-            <p class="lede">A complete launch kit: MV3 extension with offline-verifiable licensing, a Cloudflare Worker that turns Paddle payments into signed license keys, and a static checkout site. No servers. No database bill. No sales-tax filings.</p>
+            <p class="lede">A complete launch kit: an MV3 extension with offline licensing, a Cloudflare Worker that turns Paddle payments into license keys, and a checkout site. No servers. No database bill. No sales-tax filings.</p>
             <div class="cta-row">
               <a class="cta" href="https://buy.polar.sh/polar_cl_JzfdrAYil4NxQALnNRLnURIT8Q30bQsixsOvQ3sq44I" rel="noopener">Get the kit — <span data-price-full="$149">$99</span></a>
               <a class="cta secondary" href="https://demo.paidextension.dev" rel="noopener">Try one built with it &rarr;</a>
@@ -209,26 +185,19 @@
         </div>
       </section>
 
-      <div class="stats">
-        <div class="stat"><b>$0</b><span>monthly infrastructure until you have customers</span></div>
-        <div class="stat"><b>0</b><span>sales-tax or VAT returns you file — Paddle is the merchant of record</span></div>
-        <div class="stat"><b>An afternoon</b><span>hands-on, from clone to a sandbox purchase, following the setup guide</span></div>
-        <div class="stat"><b>3</b><span>browsers from one codebase: Chrome, Edge, Firefox</span></div>
-      </div>
-
       <section id="why">
         <h2>Three things no other extension kit gives you together</h2>
-        <p class="sub">Every other boilerplate is "connect Stripe, add a Firebase project, host a backend". You are then on the hook for hosting bills, uptime and VAT.</p>
+        <p class="sub">Other boilerplates say "connect Stripe, add Firebase, host a backend" and leave you the hosting bill, the uptime and the VAT.</p>
         <div class="grid">
           <div class="card">
             <span class="tag">Cost</span>
             <h3>$0/month, honestly</h3>
-            <p>GitHub Pages hosts the site. Cloudflare Workers + KV run licensing on the free tier, which covers roughly a thousand daily-active paying users; past that, Workers Paid is $5/month. Paddle only takes a cut of sales. Your fixed cost is a domain.</p>
+            <p>GitHub Pages hosts the site. Cloudflare Workers + KV run licensing free for roughly a thousand daily-active paying users, then $5/month. Paddle only takes a cut of sales. Your fixed cost is a domain (~$12/year).</p>
           </div>
           <div class="card">
             <span class="tag">Tax</span>
             <h3>Merchant of record built in</h3>
-            <p>Paddle sells to your customer, collects VAT/GST/sales tax worldwide, issues invoices and handles refunds and chargebacks. The kit turns Paddle webhooks into license keys — you never register for or file sales tax or VAT. (Income tax on what you earn is still yours.)</p>
+            <p>Paddle is legally the seller: it collects VAT, GST and sales tax worldwide, issues invoices and handles refunds and chargebacks. With Stripe those are yours. You never register for or file sales tax. (Income tax on what you earn is still yours.)</p>
           </div>
           <div class="card">
             <span class="tag">Reliability</span>
@@ -399,11 +368,8 @@ steps:
             </figure>
           </div>
         </div>
-      </section>
-
-      <section id="configure">
-        <h2>Configure it in sixty seconds</h2>
-        <p class="sub">Answer a few questions and <code>npm run init</code> rewrites the whole repo. Try it: the config, manifest and popup update as you type.</p>
+        <details class="assumptions configure-fold" id="configure">
+          <summary>Try <code>npm run init</code>: answer a few questions and watch the config, manifest and popup change</summary>
         <div class="configure">
           <div class="configure-form" role="group" aria-label="Product answers">
             <label>Product name <input type="text" name="name" value="Tab Tamer" maxlength="45"></label>
@@ -445,6 +411,7 @@ steps:
             </div>
           </div>
         </div>
+        </details>
       </section>
 
       <section id="try">
@@ -468,7 +435,7 @@ steps:
 
       <section id="compare">
         <h2>How it compares</h2>
-        <p class="sub">Against the popular extension boilerplates and the hosted "payments SDK" services &mdash; including what each one leaves you per month at your numbers.</p>
+        <p class="sub">Against extension boilerplates and hosted payment SDKs, including what each leaves you per month at your numbers.</p>
         <div class="your-numbers" role="group" aria-label="Your numbers">
           <label>Price per sale <b data-out="priceEcho">$29</b><input type="range" data-input="price" min="1" max="199" step="1" value="29"></label>
           <label>Sales per month <b data-out="salesEcho">40</b><input type="range" data-input="sales" min="0" max="1000" step="5" value="40"></label>
@@ -487,16 +454,12 @@ steps:
             <tbody>
               <tr class="live"><td>You keep, per month<br><small>on <span data-out="gross">$1,160</span> of sales</small></td><td class="us keep" data-out="usKeep">$0</td><td class="keep" data-out="diyKeep">$0</td><td class="keep" data-out="sdkKeep">$0</td></tr>
               <tr class="live"><td>Fees, infrastructure &amp; tax, per month</td><td class="us" data-out="usCost"></td><td data-out="diyCost"></td><td data-out="sdkCost"></td></tr>
-              <tr><td>Price of the kit</td><td class="us"><span data-price-full="$149">$99</span> once (Solo)</td><td>$99&ndash;$499 once</td><td>3&ndash;5% of every sale, forever</td></tr>
               <tr><td>Sales tax / VAT handled</td><td class="us yes">Yes &mdash; Paddle MoR</td><td class="no">No &mdash; Stripe, you file</td><td class="no">No &mdash; Stripe, you file</td></tr>
               <tr><td>Works when backend is down</td><td class="us yes">Yes &mdash; offline ES256 keys</td><td class="no">No</td><td class="no">No</td></tr>
               <tr><td>Device seat limits</td><td class="us yes">Yes, self-serve release</td><td class="no">No</td><td class="no">No</td></tr>
-              <tr><td>Lifetime + subscription plans</td><td class="us yes">Both</td><td>Usually subscription</td><td>Both</td></tr>
-              <tr><td>User accounts required</td><td class="us yes">No &mdash; key-based</td><td class="no">Google / email auth</td><td class="yes">No</td></tr>
               <tr><td>Refund / chargeback revocation</td><td class="us yes">Automatic</td><td class="no">DIY</td><td class="yes">Yes</td></tr>
               <tr><td>Own the code, no vendor</td><td class="us yes">Yes</td><td class="yes">Yes</td><td class="no">No &mdash; hosted dependency</td></tr>
               <tr><td>AI-agent setup/publish/test skills</td><td class="us yes">Yes</td><td class="no">No</td><td class="no">No</td></tr>
-              <tr><td>Firefox + Edge packaging</td><td class="us yes">Yes</td><td>Sometimes</td><td>Chrome-first</td></tr>
             </tbody>
           </table>
         </div>
@@ -515,7 +478,7 @@ steps:
 
       <section id="pricing">
         <h2>Pricing</h2>
-        <p class="sub">Pay once. Build as many extensions as you like. Same repo, same updates — the tier sets how many developers may use it.</p>
+        <p class="sub">Pay once, build as many extensions as you like. The tier only sets how many developers may use the kit.</p>
         <div class="plans">
           <div class="card plan featured">
             <span class="badge">Launch price</span>
@@ -547,14 +510,12 @@ steps:
           <li><span><b>Clone</b> and run <code>npm run init</code></span></li>
         </ol>
         <ul class="includes" aria-label="Included in every tier">
-          <li>Private GitHub repo access: connect GitHub after checkout</li>
           <li>Unlimited end products, commercial use</li>
           <li>Lifetime updates</li>
-          <li>Setup, licensing and publishing guides</li>
-          <li>Agent skills: setup, publish, test</li>
+          <li>Setup, licensing and publishing guides, plus agent skills</li>
           <li>Support via GitHub Issues and email</li>
         </ul>
-        <p class="guarantee">14-day refund on both tiers if it's not what you expected. Payments handled by Polar (merchant of record); you'll get a proper invoice.</p>
+        <p class="guarantee">14-day refund on both tiers, no questions asked: email <a href="mailto:hello@paidextension.dev">hello@paidextension.dev</a>. Payments are handled by Polar (merchant of record); you'll get a proper invoice.</p>
       </section>
 
       <section id="faq" class="faq">
@@ -568,14 +529,6 @@ steps:
           <p>No. The setup guide (and the <code>setup</code> agent skill) walks through creating the Paddle prices and webhook, deploying the Worker and pointing your domain at GitHub Pages. Budget an afternoon for a first run, mostly in the Paddle and Cloudflare dashboards. Paddle's production approval takes a few days; the sandbox covers everything until then.</p>
         </details>
         <details>
-          <summary>Why Paddle rather than Stripe?</summary>
-          <p>Paddle is a merchant of record: it is legally the seller, so it collects and remits sales tax in every jurisdiction and handles invoices, refunds and chargebacks. With Stripe those obligations are yours. For a solo developer selling globally that difference is the whole ballgame.</p>
-        </details>
-        <details>
-          <summary>Is it really $0/month?</summary>
-          <p>Until you outgrow the free tiers, yes: GitHub Pages is free, Cloudflare Workers gives 100,000 requests/day and KV 1,000 writes/day, Resend gives 3,000 emails/month. Paddle charges 5% + 50¢ per sale and nothing otherwise. You pay for a domain (~$12/year).</p>
-        </details>
-        <details>
           <summary>Can I use React / WXT / Plasmo?</summary>
           <p>The extension scaffold is plain TypeScript + webpack so there's nothing to fight. The <code>licensing/</code> module has no UI dependencies and drops into any MV3 project; the Worker and site are independent of the extension framework.</p>
         </details>
@@ -586,10 +539,6 @@ steps:
         <details>
           <summary>How is this "agent-native"?</summary>
           <p>The repo ships an <code>AGENTS.md</code> plus three skills in <code>.agents/skills/</code> — setup, publish and test — written as checklists an AI coding agent can execute. They encode the things that usually go wrong: service-worker constraints, CSP rules, Paddle sandbox quirks, store-review requirements.</p>
-        </details>
-        <details>
-          <summary>Refunds?</summary>
-          <p>14 days, no questions asked — email <a href="mailto:hello@paidextension.dev">hello@paidextension.dev</a>. We'll revoke repo access and refund through Polar.</p>
         </details>
       </section>
     </main>
