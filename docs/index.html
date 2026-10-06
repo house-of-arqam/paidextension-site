@@ -27,17 +27,121 @@
   <script src="assets/calc.js" defer></script>
   <script src="assets/pricing.js" defer></script>
   <script src="assets/motion.js" defer></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": "PaidExtension",
+    "description": "Launch kit for paid Chrome, Edge and Firefox extensions: MV3 extension with offline-verifiable licensing, a Cloudflare Worker that turns Paddle payments into signed license keys, and a static checkout site.",
+    "image": "https://paidextension.dev/og.png",
+    "url": "https://paidextension.dev/",
+    "brand": {
+      "@type": "Brand",
+      "name": "PaidExtension"
+    },
+    "offers": [
+      {
+        "@type": "Offer",
+        "name": "Solo",
+        "price": "99",
+        "priceCurrency": "USD",
+        "availability": "https://schema.org/InStock",
+        "url": "https://buy.polar.sh/polar_cl_JzfdrAYil4NxQALnNRLnURIT8Q30bQsixsOvQ3sq44I"
+      },
+      {
+        "@type": "Offer",
+        "name": "Agency",
+        "price": "399",
+        "priceCurrency": "USD",
+        "availability": "https://schema.org/InStock",
+        "url": "https://buy.polar.sh/polar_cl_2dy91QUuo574NemxHh4QAXM81vqJdKiAoQ00Y0krEUb"
+      }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What exactly do I receive?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Access to a private GitHub repository containing the full source: extension/, worker/, site/, scripts/, docs/, .agents/skills/ and the GitHub Actions workflows. After purchase you connect your GitHub account in the Polar customer portal and the repository invitation arrives within a minute; on Agency, share it with your developers as the license allows. Updates arrive as commits."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Do I need to know Cloudflare or Paddle already?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. The setup guide (and the setup agent skill) walks through creating the Paddle prices and webhook, deploying the Worker and pointing your domain at GitHub Pages. Budget an afternoon for a first run, mostly in the Paddle and Cloudflare dashboards. Paddle's production approval takes a few days; the sandbox covers everything until then."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why Paddle rather than Stripe?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Paddle is a merchant of record: it is legally the seller, so it collects and remits sales tax in every jurisdiction and handles invoices, refunds and chargebacks. With Stripe those obligations are yours. For a solo developer selling globally that difference is the whole ballgame."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is it really $0/month?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Until you outgrow the free tiers, yes: GitHub Pages is free, Cloudflare Workers gives 100,000 requests/day and KV 1,000 writes/day, Resend gives 3,000 emails/month. Paddle charges 5% + 50¢ per sale and nothing otherwise. You pay for a domain (~$12/year)."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I use React / WXT / Plasmo?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The extension scaffold is plain TypeScript + webpack so there's nothing to fight. The licensing/ module has no UI dependencies and drops into any MV3 project; the Worker and site are independent of the extension framework."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What does the license allow?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Unlimited commercial end products, forever, including all updates. The tier sets who may work with the kit's files: Solo is one developer; Agency is any number of developers at one company, including work delivered to clients. You may not redistribute the kit itself or use it to build a competing kit. Full text on the license page."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How is this \"agent-native\"?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The repo ships an AGENTS.md plus three skills in .agents/skills/ — setup, publish and test — written as checklists an AI coding agent can execute. They encode the things that usually go wrong: service-worker constraints, CSP rules, Paddle sandbox quirks, store-review requirements."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Refunds?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "14 days, no questions asked — email hello@paidextension.dev. We'll revoke repo access and refund through Polar."
+        }
+      }
+    ]
+  }
+  </script>
 </head>
 <body>
   <div class="wrap">
     <header class="top">
       <a class="brand" href="/"><img src="icon.png" alt="" width="32" height="32">PaidExtension</a>
       <nav aria-label="Primary">
-        <a href="#inside">What's inside</a>
-        <a href="#demo">How it works</a>
+        <a class="nav-extra" href="#inside">What's inside</a>
+        <a class="nav-extra" href="#demo">How it works</a>
         <a href="#pricing">Pricing</a>
         <a href="docs.html">Docs</a>
-        <a class="buy" href="https://buy.polar.sh/polar_cl_JzfdrAYil4NxQALnNRLnURIT8Q30bQsixsOvQ3sq44I" rel="noopener">Buy</a>
+        <a class="buy" href="#pricing">Buy</a>
         <button id="theme-toggle" type="button" aria-pressed="false" aria-label="Switch to dark mode"><span class="sun">&#9728;</span><span class="moon">&#9790;</span></button>
       </nav>
     </header>
@@ -54,6 +158,7 @@
               <a class="cta secondary" href="https://demo.paidextension.dev" rel="noopener">Try one built with it &rarr;</a>
             </div>
             <p class="note">One-time purchase &middot; lifetime updates &middot; unlimited products &middot; 14-day refund</p>
+            <p class="note">Team or building for clients? <a href="#pricing">Agency, $399 one-time &rarr;</a></p>
           </div>
 
           <div class="hero-demo" id="demo" data-state="free">
@@ -341,7 +446,21 @@ steps:
 
       <section id="try">
         <h2>Try one before you buy</h2>
-        <p class="sub"><a href="https://demo.paidextension.dev" rel="noopener">Marker</a> is a highlighter extension built from the kit: free tier, 7-day trial, Pro unlocked by a <em>Paddle sandbox</em> checkout (card 4242&nbsp;4242&nbsp;4242&nbsp;4242), server-verified sharing, and revocation when you cancel. Its product code is public at <a href="https://github.com/house-of-arqam/marker" rel="noopener">github.com/house-of-arqam/marker</a> &mdash; about 40 lines of it touch licensing.</p>
+        <div class="card try-card">
+          <img src="marker-icon.png" alt="" width="64" height="64" loading="lazy">
+          <div>
+            <h3>Marker, a highlighter extension built from the kit</h3>
+            <ul>
+              <li>Free tier, 7-day trial, and Pro unlocked by a <em>Paddle sandbox</em> checkout (card 4242&nbsp;4242&nbsp;4242&nbsp;4242)</li>
+              <li>Server-verified sharing, and revocation when you cancel</li>
+              <li>Product code is public &mdash; about 40 lines of it touch licensing</li>
+            </ul>
+            <div class="cta-row">
+              <a class="cta" href="https://demo.paidextension.dev" rel="noopener">Install Marker</a>
+              <a class="cta secondary" href="https://github.com/house-of-arqam/marker" rel="noopener">Read the code</a>
+            </div>
+          </div>
+        </div>
       </section>
 
       <section id="compare">
@@ -418,6 +537,12 @@ steps:
             <a class="cta secondary" href="https://buy.polar.sh/polar_cl_2dy91QUuo574NemxHh4QAXM81vqJdKiAoQ00Y0krEUb" rel="noopener">Buy Agency</a>
           </div>
         </div>
+        <ol class="steps" aria-label="After you pay">
+          <li><span><b>Pay</b> on Polar</span></li>
+          <li><span><b>Connect GitHub</b> in the customer portal</span></li>
+          <li><span><b>Accept the invite</b>, usually within a minute</span></li>
+          <li><span><b>Clone</b> and run <code>npm run init</code></span></li>
+        </ol>
         <ul class="includes" aria-label="Included in every tier">
           <li>Private GitHub repo access: connect GitHub after checkout</li>
           <li>Unlimited end products, commercial use</li>
